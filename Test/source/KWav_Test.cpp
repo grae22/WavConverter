@@ -65,3 +65,48 @@ TEST( KWav, LoadFile )
 }
 
 //-----------------------------------------------------------------------------
+
+TEST( KWav, WriteFile )
+{
+  // Read file into buffer.
+  FILE* file = fopen( "test.wav", "rb" );
+
+  ASSERT_NE( 0, (int)file );
+
+  fseek( file, 0, SEEK_END );
+  const long fileLength = ftell( file );
+  fseek( file, 0, SEEK_SET );
+
+  char* buffer = new char[ fileLength ];
+  const size_t sizeRead = fread( buffer, 1, fileLength, file );
+  
+  fclose( file );
+
+  ASSERT_EQ( fileLength, sizeRead );
+
+  // Initialise test object with buffer.
+  string errorDescription;
+  
+  KWav testOb;
+  bool result = testOb.Load( buffer, fileLength, errorDescription );
+
+  delete buffer;
+  
+  ASSERT_TRUE( result );
+
+  // Write back to file.
+  FILE* outFile = fopen( "test_out.wav", "wb" );
+
+  ASSERT_NE( 0, (int)outFile );
+
+  const unsigned int bufferSize = testOb.CreateBuffer( buffer );
+
+  size_t sizeWrote = fwrite( buffer, 1, bufferSize, outFile );
+  fclose( outFile );
+
+  delete buffer;
+
+  ASSERT_EQ( bufferSize, sizeWrote );
+}
+
+//-----------------------------------------------------------------------------

@@ -14,11 +14,18 @@ public:
   KWav();
   virtual ~KWav();
 
+  // Resets object state and releases any allocated memory.
+  void Reset();
+
+  // Loads wav data from a buffer.
+  // Returns 'false' on error, sets 'errorDescription' accordingly.
   bool Load( const char* buffer,
-             const int bufferSize,
+             const unsigned int bufferSize,
              std::string& errorDescription );
 
-  void Reset();
+  // Returns a new buffer populated with this wav's data.
+  // Caller is responible for deleting the pointer.
+  unsigned int CreateBuffer( char*& buffer ) const;
 
 private:
   struct Header

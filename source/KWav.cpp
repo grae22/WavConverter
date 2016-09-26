@@ -3,7 +3,6 @@
 //-----------------------------------------------------------------------------
 
 using namespace std;
-using namespace boost;
 
 //-----------------------------------------------------------------------------
 
@@ -26,11 +25,20 @@ KWav::~KWav()
 
 //-----------------------------------------------------------------------------
 
-// Loads wav data from a buffer.
-// Returns 'false' on error, sets 'errorDescription' accordingly.
+void KWav::Reset()
+{
+  delete m_wavData;
+  m_wavData = nullptr;
+
+  memset( &m_header, 0, sizeof( Header ) );
+  memset( &m_format, 0, sizeof( FormatChunk ) );
+  memset( &m_data, 0, sizeof( DataChunk ) );
+}
+
+//-----------------------------------------------------------------------------
 
 bool KWav::Load( const char* buffer,
-                 const int bufferSize,
+                 const unsigned int bufferSize,
                  string& errorDescription )
 {
   // Reset state before attempting to load.
@@ -135,16 +143,26 @@ bool KWav::Load( const char* buffer,
 
 //-----------------------------------------------------------------------------
 
-// Resets object state and releases any allocated memory.
-
-void KWav::Reset()
+unsigned int KWav::CreateBuffer( char*& buffer ) const
 {
-  delete m_wavData;
-  m_wavData = nullptr;
+  const unsigned int bufferSize =
+    sizeof( Header ) +
+    sizeof( FormatChunk ) +
+    sizeof( DataChunk ) +
+    m_data.m_dataSize;
 
-  memset( &m_header, 0, sizeof( Header ) );
-  memset( &m_format, 0, sizeof( FormatChunk ) );
-  memset( &m_data, 0, sizeof( DataChunk ) );
+  const unsigned int offsetFormatChunk = sizeof( Header );
+  const unsigned int offsetDataChunk = offsetFormatChunk + sizeof( FormatChunk );
+  const unsigned int offsetData = offsetDataChunk + sizeof( DataChunk );
+
+  buffer = new char[ bufferSize ];
+
+  memcpy( buffer, &m_header, sizeof( Header ) );
+  memcpy( &buffer[ offsetFormatChunk ], &m_format, sizeof( FormatChunk ) );
+  memcpy( &buffer[ offsetDataChunk ], &m_data, sizeof( DataChunk ) );
+  memcpy( &buffer[ offsetData ], m_wavData, m_data.m_dataSize );
+
+  return bufferSize;
 }
 
 //-----------------------------------------------------------------------------
