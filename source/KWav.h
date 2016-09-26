@@ -8,10 +8,19 @@
 
 //-----------------------------------------------------------------------------
 
+// TODO: Handle multiple data chunks - presumably this is how wavs with size
+//       greater than max value of 32 bit uint are handled.
+
 class WAVCONVERTER_API KWav
 {
+  //-- Public methods.
 public:
   KWav();
+  KWav( const boost::uint16_t channelCount,
+        const boost::uint32_t sampleRate,
+        const boost::uint16_t bitsPerSample,
+        const boost::uint8_t* wavData,
+        const boost::uint32_t wavDataSize );
   virtual ~KWav();
 
   // Resets object state and releases any allocated memory.
@@ -27,6 +36,12 @@ public:
   // Caller is responible for deleting the pointer.
   boost::uint64_t CreateBuffer( boost::int8_t*& buffer ) const;
 
+  // Simple getters.
+  boost::uint16_t GetChannelCount() const;
+  boost::uint32_t GetSampleRate() const;
+  boost::uint16_t GetBitsPerSample() const;
+
+  //-- Private types.
 private:
   // Data struct representing a wav's header chunk.
   struct Header
@@ -58,6 +73,12 @@ private:
     boost::uint32_t m_dataSize;
   };
 
+  //-- Private methods.
+private:
+  // Recalculates some values found in the FormatChunk.
+  void RecalculateFormatChunkValues();
+
+  //-- Private vars.
 private:
   Header m_header;
   FormatChunk m_format;

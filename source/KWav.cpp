@@ -19,6 +19,27 @@ KWav::KWav()
 
 //-----------------------------------------------------------------------------
 
+KWav::KWav( const uint16_t channelCount,
+            const uint32_t sampleRate,
+            const uint16_t bitsPerSample,
+            const uint8_t* wavData,
+            const uint32_t wavDataSize )
+:
+  KWav()
+{
+  m_format.m_channelCount = channelCount;
+  m_format.m_sampleRate = sampleRate;
+  m_format.m_bitsPerSample = bitsPerSample;
+  m_data.m_dataSize = wavDataSize;
+
+  m_wavData = new int8_t[ wavDataSize ];
+  memcpy( m_wavData, wavData, wavDataSize );
+
+  RecalculateFormatChunkValues();
+}
+
+//-----------------------------------------------------------------------------
+
 KWav::~KWav()
 {
   Reset();
@@ -28,12 +49,16 @@ KWav::~KWav()
 
 void KWav::Reset()
 {
-  delete m_wavData;
   m_wavData = nullptr;
 
   memset( &m_header, 0, sizeof( Header ) );
   memset( &m_format, 0, sizeof( FormatChunk ) );
   memset( &m_data, 0, sizeof( DataChunk ) );
+
+  memcpy( m_header.m_chunkId, "RIFF", 4 );
+  memcpy( m_header.m_format, "WAVE", 4 );
+  memcpy( m_format.m_chunkId, "fmt\0", 4 );
+  memcpy( m_data.m_chunkId, "data", 4 );
 }
 
 //-----------------------------------------------------------------------------
@@ -135,7 +160,7 @@ bool KWav::Load( const int8_t* buffer,
     return false;
   }
 
-  // Allocate buffer for data.
+  // Allocate buffer for data and copy data into it.
   m_wavData = new int8_t[ m_data.m_dataSize ];
   memcpy( m_wavData, &buffer[ dataOffset ], m_data.m_dataSize );
 
@@ -168,6 +193,41 @@ uint64_t KWav::CreateBuffer( int8_t*& buffer ) const
 
   // Return the new buffer, caller must delete.
   return bufferSize;
+}
+
+//-----------------------------------------------------------------------------
+
+uint16_t KWav::GetChannelCount() const
+{
+  return m_format.m_channelCount;
+}
+
+//-----------------------------------------------------------------------------
+
+uint32_t KWav::GetSampleRate() const
+{
+  return m_format.m_sampleRate;
+}
+
+//-----------------------------------------------------------------------------
+
+uint16_t KWav::GetBitsPerSample() const
+{
+  return m_format.m_bitsPerSample;
+}
+
+//-----------------------------------------------------------------------------
+
+void KWav::RecalculateFormatChunkValues()
+{
+  const int bytesPerSample = ( m_format.m_bitsPerSample / 8 );
+
+  // Byte rate.
+  m_format.m_byteRate =
+    m_format.m_sampleRate * m_format.m_channelCount * bytesPerSample;
+
+  // Block align.
+  m_format.m_blockAlign = m_format.m_channelCount * bytesPerSample;
 }
 
 //-----------------------------------------------------------------------------

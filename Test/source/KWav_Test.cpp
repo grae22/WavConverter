@@ -92,6 +92,7 @@ TEST( KWav, WriteFile )
   bool result = testOb.Load( buffer, fileLength, errorDescription );
 
   delete buffer;
+  buffer = nullptr;
   
   ASSERT_TRUE( result );
 
@@ -106,6 +107,7 @@ TEST( KWav, WriteFile )
   fclose( outFile );
 
   delete buffer;
+  buffer = nullptr;
 
   ASSERT_EQ( bufferSize, sizeWrote );
 }
