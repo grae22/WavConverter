@@ -6,12 +6,13 @@
 //-----------------------------------------------------------------------------
 
 using namespace std;
+using namespace boost;
 
 //-----------------------------------------------------------------------------
 
 TEST( KWav, LoadHeader )
 {
-  char buffer[ 45 ] = "RIFF\0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
+  const int8_t buffer[ 45 ] = "RIFF\0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
   string errorDescription;
   KWav testOb;
 
@@ -19,16 +20,16 @@ TEST( KWav, LoadHeader )
   EXPECT_TRUE( testOb.Load( buffer, 45, errorDescription ) );
 
   // Varients of header not OK.
-  char buffer1[ 45 ] = "RIF \0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
+  const int8_t buffer1[ 45 ] = "RIF \0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
   EXPECT_FALSE( testOb.Load( buffer1, 45, errorDescription ) );
 
-  char buffer2[ 45 ] = "RIFF\0\0\0\0WA Efmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
+  const int8_t buffer2[ 45 ] = "RIFF\0\0\0\0WA Efmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
   EXPECT_FALSE( testOb.Load( buffer2, 45, errorDescription ) );
 
-  char buffer3[ 45 ] = "RIF \0\0\0\0WAVEfm \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
+  const int8_t buffer3[ 45 ] = "RIF \0\0\0\0WAVEfm \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0";
   EXPECT_FALSE( testOb.Load( buffer3, 45, errorDescription ) );
 
-  char buffer4[ 45 ] = "RIF \0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 ata\0\0\0\0";
+  const int8_t buffer4[ 45 ] = "RIF \0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 ata\0\0\0\0";
   EXPECT_FALSE( testOb.Load( buffer4, 45, errorDescription ) );
 }
 
@@ -45,7 +46,7 @@ TEST( KWav, LoadFile )
   const long fileLength = ftell( file );
   fseek( file, 0, SEEK_SET );
 
-  char* buffer = new char[ fileLength ];
+  int8_t* buffer = new int8_t[ fileLength ];
   const size_t sizeRead = fread( buffer, 1, fileLength, file );
   
   fclose( file );
@@ -77,7 +78,7 @@ TEST( KWav, WriteFile )
   const long fileLength = ftell( file );
   fseek( file, 0, SEEK_SET );
 
-  char* buffer = new char[ fileLength ];
+  int8_t* buffer = new int8_t[ fileLength ];
   const size_t sizeRead = fread( buffer, 1, fileLength, file );
   
   fclose( file );
@@ -99,9 +100,9 @@ TEST( KWav, WriteFile )
 
   ASSERT_NE( 0, (int)outFile );
 
-  const unsigned int bufferSize = testOb.CreateBuffer( buffer );
+  const uint64_t bufferSize = testOb.CreateBuffer( buffer );
 
-  size_t sizeWrote = fwrite( buffer, 1, bufferSize, outFile );
+  size_t sizeWrote = fwrite( buffer, 1, static_cast< size_t >( bufferSize ), outFile );
   fclose( outFile );
 
   delete buffer;

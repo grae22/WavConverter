@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 using namespace std;
+using namespace boost;
 
 //-----------------------------------------------------------------------------
 
@@ -37,8 +38,8 @@ void KWav::Reset()
 
 //-----------------------------------------------------------------------------
 
-bool KWav::Load( const char* buffer,
-                 const unsigned int bufferSize,
+bool KWav::Load( const int8_t* buffer,
+                 const uint64_t bufferSize,
                  string& errorDescription )
 {
   // Reset state before attempting to load.
@@ -135,7 +136,7 @@ bool KWav::Load( const char* buffer,
   }
 
   // Allocate buffer for data.
-  m_wavData = new char[ m_data.m_dataSize ];
+  m_wavData = new int8_t[ m_data.m_dataSize ];
   memcpy( m_wavData, &buffer[ dataOffset ], m_data.m_dataSize );
 
   return true;
@@ -143,25 +144,29 @@ bool KWav::Load( const char* buffer,
 
 //-----------------------------------------------------------------------------
 
-unsigned int KWav::CreateBuffer( char*& buffer ) const
+uint64_t KWav::CreateBuffer( int8_t*& buffer ) const
 {
-  const unsigned int bufferSize =
+  // Calculate total buffer size required.
+  const uint64_t bufferSize =
     sizeof( Header ) +
     sizeof( FormatChunk ) +
     sizeof( DataChunk ) +
     m_data.m_dataSize;
 
+  // Calculate various offsets to write to in the buffer.
   const unsigned int offsetFormatChunk = sizeof( Header );
   const unsigned int offsetDataChunk = offsetFormatChunk + sizeof( FormatChunk );
   const unsigned int offsetData = offsetDataChunk + sizeof( DataChunk );
 
-  buffer = new char[ bufferSize ];
+  // Allocate buffer and copy data into it.
+  buffer = new int8_t[ static_cast< unsigned int >( bufferSize ) ];
 
   memcpy( buffer, &m_header, sizeof( Header ) );
   memcpy( &buffer[ offsetFormatChunk ], &m_format, sizeof( FormatChunk ) );
   memcpy( &buffer[ offsetDataChunk ], &m_data, sizeof( DataChunk ) );
   memcpy( &buffer[ offsetData ], m_wavData, m_data.m_dataSize );
 
+  // Return the new buffer, caller must delete.
   return bufferSize;
 }
 
