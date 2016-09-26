@@ -69,20 +69,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\dev\main\Source\External\gmock\gtest\include\;E:\code\boost\boost_1_61_0;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dev\main\Source\External\gmock\gtest\Debug;$(LibraryPath);E:\code\boost\boost_1_61_0\libs;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude);$(GTestInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(LibraryPath);$(BoostLibsDebug);$(GTestLibsDebug)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>E:\dev\main\Source\External\gmock\gtest\include\;E:\code\boost\boost_1_61_0;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dev\main\Source\External\gmock\gtest\Release;$(LibraryPath);E:\code\boost\boost_1_61_0\libs;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude);$(GTestInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(LibraryPath);$(BoostLibsRelease);$(GTestLibsRelease)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\code\boost\boost_1_61_0;E:\dev\main\Source\External\gmock\gtest\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dev\main\Source\External\gmock\gtest\Debug;$(LibraryPath);E:\code\boost\boost_1_61_0\libs;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude);$(GTestInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath);$(LibraryPath);$(BoostLibsDebug);$(GTestLibsDebug)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>E:\code\boost\boost_1_61_0;E:\dev\main\Source\External\gmock\gtest\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dev\main\Source\External\gmock\gtest\Release;$(LibraryPath);E:\code\boost\boost_1_61_0\libs;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude);$(GTestInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath);$(LibraryPath);$(BoostLibsRelease);$(GTestLibsRelease)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

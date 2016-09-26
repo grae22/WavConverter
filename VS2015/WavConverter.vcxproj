@@ -69,26 +69,26 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\code\boost\boost_1_61_0\;$(VC_IncludePath);</IncludePath>
-    <LibraryPath>$(VC_LibraryPath);E:\code\boost\boost_1_61_0\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath);$(LibraryPath);$(BoostLibsDebug)</LibraryPath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x86);</ExcludePath>
     <ReferencePath />
     <LibraryWPath />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);E:\code\boost\boost_1_61_0\;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath);E:\code\boost\boost_1_61_0\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath);$(LibraryPath);$(BoostLibsRelease)</LibraryPath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x86);</ExcludePath>
     <ReferencePath />
     <LibraryWPath />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\code\boost\boost_1_61_0;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\code\boost\boost_1_61_0\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(LibraryPath);$(BoostLibsDebug)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);E:\code\boost\boost_1_61_0;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);E:\code\boost\boost_1_61_0\libs;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(BoostInclude)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(LibraryPath);$(BoostLibsRelease)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
