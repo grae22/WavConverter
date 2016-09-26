@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);E:\code\boost\boost_1_61_0\;</IncludePath>
+    <IncludePath>E:\code\boost\boost_1_61_0\;$(VC_IncludePath);</IncludePath>
     <LibraryPath>$(VC_LibraryPath);E:\code\boost\boost_1_61_0\libs;$(LibraryPath)</LibraryPath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x86);</ExcludePath>
     <ReferencePath />
@@ -137,10 +137,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\converters\KChannelConverter.h" />
     <ClInclude Include="..\source\Exports.h" />
     <ClInclude Include="..\source\KWav.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\converters\KChannelConverter.cpp" />
     <ClCompile Include="..\source\KMain.cpp" />
     <ClCompile Include="..\source\KWav.cpp" />
   </ItemGroup>

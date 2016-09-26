@@ -3,5 +3,13 @@
   <ItemGroup>
     <ClCompile Include="..\source\KWav_Test.cpp" />
     <ClCompile Include="..\source\WavConverter_Test.cpp" />
+    <ClCompile Include="..\source\converters\KChannelConvert_Test.cpp">
+      <Filter>Converters</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Converters">
+      <UniqueIdentifier>{f7129b3a-ef03-48b2-937a-4775696eb7bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

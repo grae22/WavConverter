@@ -3,9 +3,20 @@
   <ItemGroup>
     <ClInclude Include="..\source\KWav.h" />
     <ClInclude Include="..\source\Exports.h" />
+    <ClInclude Include="..\source\converters\KChannelConverter.h">
+      <Filter>Converters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\KWav.cpp" />
     <ClCompile Include="..\source\KMain.cpp" />
+    <ClCompile Include="..\source\converters\KChannelConverter.cpp">
+      <Filter>Converters</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Converters">
+      <UniqueIdentifier>{03bc7450-15a9-4e35-8023-977de09ee343}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
