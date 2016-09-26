@@ -19,8 +19,8 @@ public:
   KWav( const boost::uint16_t channelCount,
         const boost::uint32_t sampleRate,
         const boost::uint16_t bitsPerSample,
-        const boost::uint8_t* wavData,
-        const boost::uint32_t wavDataSize );
+        const boost::int8_t* wavData,
+        const boost::uint64_t wavDataSize );
   virtual ~KWav();
 
   // Resets object state and releases any allocated memory.
@@ -40,6 +40,8 @@ public:
   boost::uint16_t GetChannelCount() const;
   boost::uint32_t GetSampleRate() const;
   boost::uint16_t GetBitsPerSample() const;
+  boost::uint64_t GetDataSize() const;
+  const int8_t* GetData() const;
 
   //-- Private types.
 private:
@@ -58,6 +60,7 @@ private:
   public:
     boost::int8_t m_chunkId[ 4 ];
     boost::uint32_t m_size;
+    boost::uint16_t m_audioFormat;
     boost::uint16_t m_channelCount;
     boost::uint32_t m_sampleRate;
     boost::uint32_t m_byteRate;
@@ -75,8 +78,8 @@ private:
 
   //-- Private methods.
 private:
-  // Recalculates some values found in the FormatChunk.
-  void RecalculateFormatChunkValues();
+  // Recalculates some values found in the header chunks.
+  void RecalculateValues();
 
   //-- Private vars.
 private:

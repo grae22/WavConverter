@@ -22,20 +22,20 @@ KWav::KWav()
 KWav::KWav( const uint16_t channelCount,
             const uint32_t sampleRate,
             const uint16_t bitsPerSample,
-            const uint8_t* wavData,
-            const uint32_t wavDataSize )
+            const int8_t* wavData,
+            const uint64_t wavDataSize )
 :
   KWav()
 {
   m_format.m_channelCount = channelCount;
   m_format.m_sampleRate = sampleRate;
   m_format.m_bitsPerSample = bitsPerSample;
-  m_data.m_dataSize = wavDataSize;
+  m_data.m_dataSize = static_cast< uint32_t >( wavDataSize );
 
-  m_wavData = new int8_t[ wavDataSize ];
-  memcpy( m_wavData, wavData, wavDataSize );
+  m_wavData = new int8_t[ static_cast< unsigned int >( wavDataSize ) ];
+  memcpy( m_wavData, wavData, static_cast< unsigned int >( wavDataSize ) );
 
-  RecalculateFormatChunkValues();
+  RecalculateValues();
 }
 
 //-----------------------------------------------------------------------------
@@ -57,8 +57,11 @@ void KWav::Reset()
 
   memcpy( m_header.m_chunkId, "RIFF", 4 );
   memcpy( m_header.m_format, "WAVE", 4 );
-  memcpy( m_format.m_chunkId, "fmt\0", 4 );
+  memcpy( m_format.m_chunkId, "fmt ", 4 );
   memcpy( m_data.m_chunkId, "data", 4 );
+
+  m_format.m_size = 16;
+  m_format.m_audioFormat = 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -218,9 +221,29 @@ uint16_t KWav::GetBitsPerSample() const
 
 //-----------------------------------------------------------------------------
 
-void KWav::RecalculateFormatChunkValues()
+boost::uint64_t KWav::GetDataSize() const
+{
+  return m_data.m_dataSize;
+}
+
+//-----------------------------------------------------------------------------
+
+const int8_t * KWav::GetData() const
+{
+  return m_wavData;
+}
+
+//-----------------------------------------------------------------------------
+
+void KWav::RecalculateValues()
 {
   const int bytesPerSample = ( m_format.m_bitsPerSample / 8 );
+
+  // Format chunk size.
+  m_format.m_size = 16;
+
+  // Header chunk size.
+  m_header.m_size = 4 + ( 8 + m_format.m_size ) + ( 8 + m_data.m_dataSize );
 
   // Byte rate.
   m_format.m_byteRate =
