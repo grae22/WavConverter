@@ -1,0 +1,11 @@
+*.obj
+
+debug
+release
+
+.vs
+*.user
+
+VS2015/*.suo
+VS2015/*.db
+VS2015/*.opendb
