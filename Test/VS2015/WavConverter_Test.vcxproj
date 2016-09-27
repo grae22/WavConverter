@@ -137,7 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\converters\KChannelConvert_Test.cpp" />
+    <ClCompile Include="..\source\converters\KChannelConverter_Test.cpp" />
+    <ClCompile Include="..\source\converters\KSampleRateConverter_Test.cpp" />
     <ClCompile Include="..\source\KWav_Test.cpp" />
     <ClCompile Include="..\source\WavConverter_Test.cpp" />
   </ItemGroup>

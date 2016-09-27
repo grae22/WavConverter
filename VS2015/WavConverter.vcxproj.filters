@@ -6,11 +6,17 @@
     <ClInclude Include="..\source\converters\KChannelConverter.h">
       <Filter>Converters</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\converters\KSampleRateConverter.h">
+      <Filter>Converters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\KWav.cpp" />
     <ClCompile Include="..\source\KMain.cpp" />
     <ClCompile Include="..\source\converters\KChannelConverter.cpp">
+      <Filter>Converters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\converters\KSampleRateConverter.cpp">
       <Filter>Converters</Filter>
     </ClCompile>
   </ItemGroup>

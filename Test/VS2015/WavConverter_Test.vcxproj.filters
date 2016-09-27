@@ -3,7 +3,10 @@
   <ItemGroup>
     <ClCompile Include="..\source\KWav_Test.cpp" />
     <ClCompile Include="..\source\WavConverter_Test.cpp" />
-    <ClCompile Include="..\source\converters\KChannelConvert_Test.cpp">
+    <ClCompile Include="..\source\converters\KSampleRateConverter_Test.cpp">
+      <Filter>Converters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\converters\KChannelConverter_Test.cpp">
       <Filter>Converters</Filter>
     </ClCompile>
   </ItemGroup>

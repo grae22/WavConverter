@@ -138,11 +138,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\source\converters\KChannelConverter.h" />
+    <ClInclude Include="..\source\converters\KSampleRateConverter.h" />
     <ClInclude Include="..\source\Exports.h" />
     <ClInclude Include="..\source\KWav.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\converters\KChannelConverter.cpp" />
+    <ClCompile Include="..\source\converters\KSampleRateConverter.cpp" />
     <ClCompile Include="..\source\KMain.cpp" />
     <ClCompile Include="..\source\KWav.cpp" />
   </ItemGroup>
