@@ -11,26 +11,26 @@ using namespace boost;
 
 //-----------------------------------------------------------------------------
 
-TEST( KSampleRateConverter, MonoToStero8Bit )
-{/*
-  const int8_t data[] = "AB";
-  KWav src( 1, 44100, 8, data, 2 );
+TEST( KSampleRateConverter, LinearUpSample )
+{
+  const int8_t data[] = "AC";
+  KWav src( 1, 22050, 8, data, 2 );
   KWav* dest = nullptr;
   string errorDescription;
 
   map< string, string > options;
-  options.insert( pair< string, string >( "-c", "2" ) );
+  options.insert( pair< string, string >( "-r", "44100" ) );
+  options.insert( pair< string, string >( "-m", "L" ) );
 
   KSampleRateConverter::Convert( src, dest, options, errorDescription );
 
   ASSERT_NE( nullptr, dest );
-  ASSERT_EQ( 4, dest->GetDataSize() );
+  ASSERT_EQ( 3, dest->GetDataSize() );
 
   const int8_t* newData = dest->GetData();
   EXPECT_EQ( 'A', newData[ 0 ] );
-  EXPECT_EQ( 'A', newData[ 1 ] );
-  EXPECT_EQ( 'B', newData[ 2 ] );
-  EXPECT_EQ( 'B', newData[ 3 ] );*/
+  EXPECT_EQ( 'B', newData[ 1 ] );
+  EXPECT_EQ( 'C', newData[ 2 ] );
 }
 
 //-----------------------------------------------------------------------------
