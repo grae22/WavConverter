@@ -1,4 +1,4 @@
-#include "Converters\KChannelConverter.h"
+#include "Converters/KChannelConverter.h"
 #include "KWav.h"
 
 #include <gtest/gtest.h>

@@ -1,5 +1,5 @@
 #include "KSampleRateConverter.h"
-#include "..\KWav.h"
+#include "../KWav.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -16,39 +16,38 @@ bool KSampleRateConverter::Convert( const KWav& source,
                                     std::map< std::string, std::string > options,
                                     std::string& errorDescription )
 {
-  /*
-  // Get the new channel count from the options.
-  uint16_t newChannelCount = 0;
+  // Get the new sample rate from the options.
+  uint32_t newRate = 0;
 
-  if( options.find( "-c" ) == options.end() )
+  if( options.find( "-r" ) == options.end() )
   {
-    errorDescription = "Channels (-c) option not specified.";
+    errorDescription = "Sample rate (-r) option not specified.";
     return false;
   }
 
   try
   {
-    newChannelCount = lexical_cast< uint16_t >( options[ "-c" ].c_str() );
+    newRate = lexical_cast< uint32_t >( options[ "-r" ].c_str() );
   }
   catch( bad_lexical_cast )
   {
-    errorDescription = "Non-numeric channels option specified.";
+    errorDescription = "Non-numeric sample rate option specified.";
     return false;
   }
 
-  if( newChannelCount == 0 )
+  if( newRate == 0 )
   {
-    errorDescription = "Channel count cannot be zero.";
+    errorDescription = "Sample rate cannot be zero.";
     return false;
   }
-  else if( newChannelCount > 2 )
+  else if( newRate > 96000 )
   {
-    errorDescription = "Channel count cannot be greater than two.";
+    errorDescription = "Sample rate cannot exceed 96000.";
     return false;
   }
-
-  // New channel count is two? Check if the mode has been specified.
-  StereoToMonoMode mode = COMBINE;
+  
+  // Get the method to use.
+  Method method = LINEAR;
 
   if( options.find( "-m" ) != options.end() )
   {
@@ -57,36 +56,32 @@ bool KSampleRateConverter::Convert( const KWav& source,
 
     if( m.length() == 0 )
     {
-      errorDescription = "No stero-to-mono mode (-m) specified.";
+      errorDescription = "No re-sampling method (-m) specified.";
       return false;
     }
 
     switch( m[ 0 ] )
     {
-      case 'C':
-        mode = COMBINE;
-        break;
-
       case 'L':
-        mode = SOURCE_LEFT;
+        method = LINEAR;
         break;
 
-      case 'R':
-        mode = SOURCE_RIGHT;
+      case 'C':
+        method = CUBIC;
         break;
 
       default:
-        errorDescription = "Invalid stero-to-mono mode (-m) specified.";
+        errorDescription = "Invalid re-sampling method (-m) specified.";
         return false;
     }
   }
 
-  // Channel count is already the required count?
-  if( newChannelCount == source.GetChannelCount() )
+  // Already at specified rate?
+  if( source.GetSampleRate() == newRate )
   {
     return true;
   }
-
+  
   // Get the wav data.
   const uint64_t dataSize = source.GetDataSize();
   const int8_t* data = source.GetData();
@@ -95,43 +90,67 @@ bool KSampleRateConverter::Convert( const KWav& source,
   int8_t* newData = nullptr;
   uint64_t newDataSize = 0;
 
-  if( source.GetChannelCount() == 1 &&
-      newChannelCount == 2 )
+  switch( method )
   {
-    newData =
-      CreateStereoFromMono(
-        data,
-        dataSize,
-        source.GetBitsPerSample() / 8,
-        newDataSize );
-  }
-  else if( source.GetChannelCount() == 2 &&
-           newChannelCount == 1 )
-  {
-    newData =
-      CreateMonoFromStereo(
-        mode,
-        data,
-        dataSize,
-        source.GetBitsPerSample() / 8,
-        newDataSize );
-  }
-  else
-  {
-    errorDescription = "Unknown conversion type.";
-    return false;
+    case LINEAR:
+      if( source.GetSampleRate() < newRate )
+      {
+        newData =
+          UpsampleLinear( source,
+                          newRate,
+                          newDataSize );
+      }
+      break;
+
+    case CUBIC:
+      break;
+
+    default:
+      errorDescription = "Unknown re-sampling method.";
+      return false;
   }
 
   // Create destination wav object.
   destination =
     new KWav(
-      newChannelCount,
-      source.GetSampleRate(),
+      source.GetChannelCount(),
+      newRate,
       source.GetBitsPerSample(),
       newData,
       newDataSize );
-  */
+
   return true;
+}
+
+//-----------------------------------------------------------------------------
+
+int8_t* KSampleRateConverter::UpsampleLinear( const KWav& input,
+                                              const uint32_t newSampleRate,
+                                              uint64_t& newDataSize )
+{
+  // Calculate new buffer size.
+  if( input.GetBytesPerSample() == 0 ||
+      input.GetChannelCount() == 0 )
+  {
+    return nullptr;
+  }
+
+  newDataSize = newSampleRate / input.GetBytesPerSample() / input.GetChannelCount();
+
+  // Allocate the buffer.
+  int8_t* buffer = new int8_t[ newDataSize ];
+  fill( buffer, buffer + newDataSize, 0 );
+
+  // Calculate the ratio between sample rates.
+  const float ratio = static_cast< float >( input.GetSampleRate() ) / newSampleRate;
+
+  //
+  for( uint64_t i = 0; i < input.GetDataSize(); i++ )
+  {
+
+  }
+
+  return buffer;
 }
 
 //-----------------------------------------------------------------------------

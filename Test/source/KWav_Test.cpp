@@ -113,3 +113,15 @@ TEST( KWav, WriteFile )
 }
 
 //-----------------------------------------------------------------------------
+
+//TEST( KWav, CreateDataBufferFromChannel )
+//{
+//  const int8_t buffer[] = "RIFF\0\0\0\0WAVEfmt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data\0\0\0\0\1\2\1\2";
+//  string errorDescription;
+//  KWav testOb;
+//
+//  ASSERT_TRUE( testOb.Load( buffer, 45, errorDescription ) );
+//
+//}
+
+//-----------------------------------------------------------------------------

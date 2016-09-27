@@ -36,10 +36,15 @@ public:
   // Caller is responible for deleting the pointer.
   boost::uint64_t CreateBuffer( boost::int8_t*& buffer ) const;
 
+  // Returns a new buffer which the data from the specified channel.
+  boost::int8_t* CreateDataBufferFromChannel( const boost::uint16_t channel ) const;
+
   // Simple getters.
   boost::uint16_t GetChannelCount() const;
   boost::uint32_t GetSampleRate() const;
   boost::uint16_t GetBitsPerSample() const;
+  boost::uint16_t GetBytesPerSample() const;
+  boost::uint64_t GetSampleCount() const;
   boost::uint64_t GetDataSize() const;
   const int8_t* GetData() const;
 

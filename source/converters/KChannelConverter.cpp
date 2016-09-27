@@ -148,7 +148,7 @@ int8_t* KChannelConverter::CreateStereoFromMono( const int8_t* data,
 {
   newDataSize = dataSize * 2;
 
-  int8_t* buffer = new int8_t[ static_cast< unsigned int >( newDataSize ) ];
+  int8_t* buffer = new int8_t[ newDataSize ];
 
   for( uint64_t i = 0; i < dataSize; i += bytesPerSample )
   {
@@ -181,7 +181,7 @@ int8_t* KChannelConverter::CreateMonoFromStereo( const StereoToMonoMode mode,
     newDataSize++;
   }
 
-  int8_t* buffer = new int8_t[ static_cast< unsigned int >( newDataSize ) ];
+  int8_t* buffer = new int8_t[ newDataSize ];
 
   uint64_t i = 0;
 

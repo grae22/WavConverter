@@ -1,5 +1,8 @@
 #include "KWav.h"
 
+#include <boost/range/adaptors.hpp>
+#include <boost/range/algorithm/copy.hpp>
+
 //-----------------------------------------------------------------------------
 
 using namespace std;
@@ -30,10 +33,10 @@ KWav::KWav( const uint16_t channelCount,
   m_format.m_channelCount = channelCount;
   m_format.m_sampleRate = sampleRate;
   m_format.m_bitsPerSample = bitsPerSample;
-  m_data.m_dataSize = static_cast< uint32_t >( wavDataSize );
+  m_data.m_dataSize = static_cast< uint32_t >( wavDataSize );   // TODO: Need multiple data chunks to handle this.
 
-  m_wavData = new int8_t[ static_cast< unsigned int >( wavDataSize ) ];
-  memcpy( m_wavData, wavData, static_cast< unsigned int >( wavDataSize ) );
+  m_wavData = new int8_t[ wavDataSize ];
+  memcpy( m_wavData, wavData, wavDataSize );
 
   RecalculateValues();
 }
@@ -187,7 +190,7 @@ uint64_t KWav::CreateBuffer( int8_t*& buffer ) const
   const unsigned int offsetData = offsetDataChunk + sizeof( DataChunk );
 
   // Allocate buffer and copy data into it.
-  buffer = new int8_t[ static_cast< unsigned int >( bufferSize ) ];
+  buffer = new int8_t[ bufferSize ];
 
   memcpy( buffer, &m_header, sizeof( Header ) );
   memcpy( &buffer[ offsetFormatChunk ], &m_format, sizeof( FormatChunk ) );
@@ -196,6 +199,39 @@ uint64_t KWav::CreateBuffer( int8_t*& buffer ) const
 
   // Return the new buffer, caller must delete.
   return bufferSize;
+}
+
+//-----------------------------------------------------------------------------
+
+int8_t* KWav::CreateDataBufferFromChannel( const uint16_t channel ) const
+{
+  // Invalid channel?
+  if( channel >= m_format.m_channelCount )
+  {
+    return nullptr;
+  }
+
+  // Allocate buffer.
+  const uint64_t newSize = m_data.m_dataSize / 2;
+
+  int8_t* buffer = new int8_t[ newSize ];
+  fill( buffer, buffer + newSize, 0 );
+
+  // Copy channel data into buffer.
+  const uint16_t bytesPerSample = ( m_format.m_bitsPerSample / 8 );
+  const uint16_t start = channel * ( m_format.m_bitsPerSample / 8 );
+  const uint16_t step = ( m_format.m_channelCount - 1 ) * ( m_format.m_bitsPerSample / 8 );
+
+  //boost::copy(
+  //  make_iterator_range( m_wavData + start, m_wavData + m_data.m_dataSize - start ) | adaptors::strided( step ),
+  //  buffer );
+
+  for( uint64_t i = start; i < newSize; i += bytesPerSample )
+  {
+    memcpy( &buffer[ i ], &m_wavData[ i * step ], bytesPerSample );
+  }
+
+  return buffer;
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +257,30 @@ uint16_t KWav::GetBitsPerSample() const
 
 //-----------------------------------------------------------------------------
 
-boost::uint64_t KWav::GetDataSize() const
+uint16_t KWav::GetBytesPerSample() const
+{
+  return m_format.m_bitsPerSample / 8;
+}
+
+//-----------------------------------------------------------------------------
+
+uint64_t KWav::GetSampleCount() const
+{
+  if( m_format.m_bitsPerSample == 0 ||
+      m_format.m_channelCount == 0 )
+  {
+    return 0;
+  }
+
+  return
+    m_data.m_dataSize /
+      ( m_format.m_bitsPerSample / 8 ) /
+        m_format.m_channelCount;
+}
+
+//-----------------------------------------------------------------------------
+
+uint64_t KWav::GetDataSize() const
 {
   return m_data.m_dataSize;
 }

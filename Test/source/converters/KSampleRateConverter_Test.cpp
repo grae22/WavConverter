@@ -1,4 +1,4 @@
-#include "Converters\KSampleRateConverter.h"
+#include "Converters/KSampleRateConverter.h"
 #include "KWav.h"
 
 #include <gtest/gtest.h>

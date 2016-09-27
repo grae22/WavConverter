@@ -1,7 +1,7 @@
 #ifndef KSampleRateConverter_H
 #define KSampleRateConverter_H
 
-#include "..\Exports.h"
+#include "../Exports.h"
 
 #include <boost/cstdint.hpp>
 #include <map>
@@ -23,10 +23,17 @@ public:
 
   //-- Private types.
 private:
+  enum Method
+  {
+    LINEAR,
+    CUBIC
+  };
 
   //-- Private methods.
 private:
-
+  static boost::int8_t* UpsampleLinear( const KWav& input,
+                                        const boost::uint32_t newSampleRate,
+                                        boost::uint64_t& newDataSize );
 };
 
 //-----------------------------------------------------------------------------
