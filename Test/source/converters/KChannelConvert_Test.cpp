@@ -123,7 +123,7 @@ TEST( KChannelConverter, FileMonoToStero16Bit )
 
 //-----------------------------------------------------------------------------
 
-TEST( KChannelConverter, FileSteroToMono16Bit )
+TEST( KChannelConverter, FileSteroToMono16Bit_SourceLeft )
 {
   // Read file into buffer.
   FILE* file = fopen( "StereoTest.wav", "rb" );
@@ -167,7 +167,68 @@ TEST( KChannelConverter, FileSteroToMono16Bit )
       errorDescription );
 
   // Write back to file.
-  FILE* outFile = fopen( "test_mono_out.wav", "wb" );
+  FILE* outFile = fopen( "test_mono_left_out.wav", "wb" );
+
+  ASSERT_NE( 0, (int)outFile );
+
+  const uint64_t bufferSize = newTestOb->CreateBuffer( buffer );
+
+  size_t sizeWrote = fwrite( buffer, 1, static_cast< size_t >( bufferSize ), outFile );
+  fclose( outFile );
+
+  delete buffer;
+  buffer = nullptr;
+
+  ASSERT_EQ( bufferSize, sizeWrote );
+}
+
+//-----------------------------------------------------------------------------
+
+TEST( KChannelConverter, FileSteroToMono16Bit_SourceCombine )
+{
+  // Read file into buffer.
+  FILE* file = fopen( "StereoTest.wav", "rb" );
+
+  ASSERT_NE( 0, (int)file );
+
+  fseek( file, 0, SEEK_END );
+  const long fileLength = ftell( file );
+  fseek( file, 0, SEEK_SET );
+
+  int8_t* buffer = new int8_t[ fileLength ];
+  const size_t sizeRead = fread( buffer, 1, fileLength, file );
+  
+  fclose( file );
+
+  ASSERT_EQ( fileLength, sizeRead );
+
+  // Initialise test object with buffer.
+  string errorDescription;
+  
+  KWav testOb;
+  bool result = testOb.Load( buffer, fileLength, errorDescription );
+
+  delete buffer;
+  buffer = nullptr;
+  
+  ASSERT_TRUE( result );
+
+  // Convert.
+  KWav* newTestOb = nullptr;
+
+  map< string, string > options;
+  options.insert( pair< string, string >( "-c", "1" ) );
+  options.insert( pair< string, string >( "-m", "C" ) );
+
+  result =
+    KChannelConverter::Convert(
+      testOb,
+      newTestOb,
+      options,
+      errorDescription );
+
+  // Write back to file.
+  FILE* outFile = fopen( "test_mono_combined_out.wav", "wb" );
 
   ASSERT_NE( 0, (int)outFile );
 

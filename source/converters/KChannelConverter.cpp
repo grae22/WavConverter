@@ -190,12 +190,25 @@ int8_t* KChannelConverter::CreateMonoFromStereo( const StereoToMonoMode mode,
   {
     if( mode == COMBINE )
     {
+      int64_t leftValue = 0;
+      int64_t rightValue = 0;
 
+      memcpy( &leftValue, &data[ i * 2 ], bytesPerSample );
+      memcpy( &rightValue, &data[ ( i * 2 ) + bytesPerSample ], bytesPerSample );
+
+      leftValue += rightValue;
+      leftValue /= 2;
+
+      memcpy( &buffer[ i ],
+              &leftValue,
+              bytesPerSample );
     }
-
-    memcpy( &buffer[ i ],
-            &data[ ( i * 2 ) ],
-            bytesPerSample );
+    else
+    {
+      memcpy( &buffer[ i ],
+              &data[ i * 2 ],
+              bytesPerSample );
+    }
   }
 
   return buffer;
