@@ -1,7 +1,7 @@
 #ifndef KCHANNELCONVERTER_H
 #define KCHANNELCONVERTER_H
 
-#include "..\Exports.h"
+#include "../Exports.h"
 
 #include <boost/cstdint.hpp>
 #include <map>

@@ -1,5 +1,5 @@
 #include "KChannelConverter.h"
-#include "..\KWav.h"
+#include "../KWav.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -129,6 +129,10 @@ bool KChannelConverter::Convert( const KWav& source,
       source.GetBitsPerSample(),
       newData,
       newDataSize );
+
+  // Clean up.
+  delete newData;
+  newData = nullptr;
 
   return true;
 }
